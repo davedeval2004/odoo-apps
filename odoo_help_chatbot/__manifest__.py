@@ -4,18 +4,34 @@
     'version': '19.0.1.0.0',
     'category': 'Productivity',
     'summary': 'AI-powered Help Chatbot for Odoo Business Process Guidance',
-    'description': """
-        Adds a Help button in the systray that opens an AI-powered chatbot.
-        The chatbot helps non-technical users solve Odoo issues using
-        simple, business-friendly language with step-by-step guidance.
 
-        Supported AI Providers:
-        - OpenAI (GPT-4o, GPT-4, GPT-3.5-turbo)
-        - Anthropic (Claude)
+    'description': """
+Help Chatbot
+
+An AI-powered assistant for Odoo users that provides business-friendly,
+step-by-step guidance for common Odoo operations and troubleshooting.
+
+Features:
+- Systray Help Button
+- AI-powered Chat Assistant
+- Business-friendly Responses
+- Odoo Process Guidance
+- OpenAI Integration
+- Anthropic Claude Integration
+- Configurable AI Models
+- Secure User Access Control
+
+Supported Providers:
+- OpenAI (GPT-4o, GPT-4, GPT-3.5 Turbo)
+- Anthropic Claude
     """,
-    'author': 'Custom',
-    'website': '',
-    'depends': ['web', 'mail'],
+
+    'author': 'Flowient',
+    'maintainer': 'Flowient',
+    'license': 'LGPL-3',
+    'price': 10.00,
+    'currency': 'USD',
+    'depends': ['web','mail'],
     'data': [
         'security/ir.model.access.csv',
         'security/ir_rule.xml',
@@ -29,8 +45,10 @@
             'odoo_help_chatbot/static/src/js/help_chatbot_systray.js',
         ],
     },
+    'images': [
+        'static/description/banner.png',
+    ],
     'installable': True,
     'application': False,
     'auto_install': False,
-    'license': 'LGPL-3',
 }
