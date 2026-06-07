@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="odoo_help_chatbot.HelpChatbotSystray">
+        <div class="o_help_chatbot_systray" t-ref="root">
+            <button class="o_help_chatbot_btn btn border-0 d-flex align-items-center"
+                    t-on-click="togglePanel"
+                    title="Help Chatbot"
+                    aria-label="Help Chatbot">
+                <i class="fa fa-question-circle fs-4"/>
+            </button>
+
+            <div t-if="state.isOpen" class="o_help_chatbot_panel shadow-lg" t-ref="panel">
+                <!-- Header -->
+                <div class="o_help_chatbot_header d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fa fa-robot fs-5"/>
+                        <span class="fw-bold">Help Assistant</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-1">
+                        <button class="btn btn-sm border-0 text-white opacity-75 opacity-100-hover"
+                                t-on-click="newSession" title="New Conversation">
+                            <i class="fa fa-plus"/>
+                        </button>
+                        <button class="btn btn-sm border-0 text-white opacity-75 opacity-100-hover"
+                                t-on-click="clearHistory" title="Clear History">
+                            <i class="fa fa-trash"/>
+                        </button>
+                        <button class="btn btn-sm border-0 text-white opacity-75 opacity-100-hover"
+                                t-on-click="togglePanel" title="Close">
+                            <i class="fa fa-times"/>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Messages -->
+                <div class="o_help_chatbot_messages" t-ref="messagesContainer">
+                    <t t-if="state.messages.length === 0">
+                        <div class="o_help_chatbot_welcome text-center p-4">
+                            <i class="fa fa-comments-o fa-3x text-muted mb-3 d-block"/>
+                            <p class="fw-bold mb-1">How can I help you?</p>
+                            <p class="text-muted small">
+                                Ask me about any Odoo business process, error, or workflow.
+                                I'll guide you step-by-step.
+                            </p>
+                            <p class="text-muted small">
+                                <i class="fa fa-paperclip me-1"/>You can also attach a screenshot!
+                            </p>
+                            <div class="o_help_chatbot_suggestions mt-3">
+                                <t t-foreach="suggestions" t-as="suggestion" t-key="suggestion_index">
+                                    <button class="btn btn-outline-primary btn-sm m-1"
+                                            t-on-click="() => this.sendSuggestion(suggestion.text)">
+                                        <t t-esc="suggestion.label"/>
+                                    </button>
+                                </t>
+                            </div>
+                        </div>
+                    </t>
+
+                    <t t-foreach="state.messages" t-as="msg" t-key="msg_index">
+                        <div t-attf-class="o_help_chatbot_msg o_help_chatbot_msg_{{msg.role}} d-flex mb-2"
+                             t-att-class="{'justify-content-end': msg.role === 'user'}">
+                            <div t-if="msg.role === 'assistant'" class="o_help_chatbot_avatar me-2 flex-shrink-0">
+                                <i class="fa fa-robot"/>
+                            </div>
+                            <div t-attf-class="o_help_chatbot_bubble o_help_chatbot_bubble_{{msg.role}}">
+                                <!-- Image thumbnail in message -->
+                                <t t-if="msg.image">
+                                    <div class="o_help_chatbot_msg_image mb-1">
+                                        <img t-att-src="msg.image" alt="Attachment"
+                                             class="rounded" style="max-width:100%;max-height:150px;cursor:pointer;"
+                                             t-on-click="() => this.previewImage(msg.image)"/>
+                                    </div>
+                                </t>
+                                <t t-if="msg.role === 'assistant'">
+                                    <div class="o_help_chatbot_content" t-out="formatMessage(msg.content)"/>
+                                </t>
+                                <t t-else="">
+                                    <t t-esc="msg.content"/>
+                                </t>
+                            </div>
+                        </div>
+                    </t>
+
+                    <div t-if="state.isLoading" class="o_help_chatbot_msg o_help_chatbot_msg_assistant d-flex mb-2">
+                        <div class="o_help_chatbot_avatar me-2 flex-shrink-0">
+                            <i class="fa fa-robot"/>
+                        </div>
+                        <div class="o_help_chatbot_bubble o_help_chatbot_bubble_assistant">
+                            <div class="o_help_chatbot_typing">
+                                <span class="o_typing_dot"/>
+                                <span class="o_typing_dot"/>
+                                <span class="o_typing_dot"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div t-if="state.errorMessage" class="o_help_chatbot_error alert alert-warning mx-3 py-2 small">
+                        <i class="fa fa-exclamation-triangle me-1"/>
+                        <t t-esc="state.errorMessage"/>
+                    </div>
+                </div>
+
+                <!-- Attachment Preview -->
+                <div t-if="state.attachedImage" class="o_help_chatbot_attach_preview">
+                    <div class="d-flex align-items-center gap-2 px-3 py-2">
+                        <img t-att-src="state.attachedImage" alt="Preview" class="o_attach_thumb rounded"/>
+                        <div class="flex-grow-1 small text-truncate">
+                            <t t-esc="state.attachedFileName"/>
+                        </div>
+                        <button class="btn btn-sm btn-link text-danger p-0" t-on-click="removeAttachment" title="Remove">
+                            <i class="fa fa-times-circle"/>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Image Full Preview Overlay -->
+                <div t-if="state.previewImageSrc" class="o_help_chatbot_image_overlay" t-on-click="closePreview">
+                    <img t-att-src="state.previewImageSrc" alt="Full preview"/>
+                </div>
+
+                <!-- Input -->
+                <div class="o_help_chatbot_input_area">
+                    <div class="d-flex align-items-end gap-1 p-2">
+                        <button class="btn btn-sm o_help_chatbot_attach_btn flex-shrink-0"
+                                t-on-click="triggerFileInput"
+                                t-att-disabled="state.isLoading"
+                                title="Attach image or screenshot">
+                            <i class="fa fa-paperclip"/>
+                        </button>
+                        <input type="file" class="d-none" t-ref="fileInput"
+                               accept="image/*" t-on-change="onFileSelected"/>
+                        <textarea class="o_help_chatbot_input form-control"
+                                  t-ref="inputField"
+                                  t-att-disabled="state.isLoading"
+                                  placeholder="Ask your question..."
+                                  t-on-keydown="onInputKeydown"
+                                  t-on-input="onInputChange"
+                                  rows="1"/>
+                        <button class="btn btn-primary o_help_chatbot_send_btn flex-shrink-0"
+                                t-on-click="sendMessage"
+                                t-att-disabled="state.isLoading or (!state.inputValue.trim() and !state.attachedImage)">
+                            <i class="fa fa-paper-plane"/>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

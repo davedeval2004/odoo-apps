@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_help_chatbot" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.help.chatbot</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app_settings_block title="Help Chatbot" string="Help Chatbot"
+                    data-key="odoo_help_chatbot"
+                    groups="base.group_system">
+                    <block title="AI Configuration" id="helpbot_ai_config">
+                        <setting id="helpbot_provider_setting"
+                            string="AI Provider"
+                            help="Select the AI service provider for the Help Chatbot">
+                            <field name="helpbot_ai_provider" required="True"/>
+                        </setting>
+                        <setting id="helpbot_api_key_setting"
+                            string="API Key"
+                            help="Enter the API key for the selected AI provider">
+                            <field name="helpbot_api_key" password="True" required="True"/>
+                        </setting>
+                        <setting id="helpbot_model_setting"
+                            string="Model Name"
+                            help="Specify the AI model to use">
+                            <field name="helpbot_model_name" required="True"/>
+                            <div class="text-muted mt-1">
+                                <b>OpenAI:</b> gpt-4o, gpt-4, gpt-3.5-turbo<br/>
+                                <b>Anthropic:</b> claude-sonnet-4-20250514, claude-3-5-sonnet-20241022<br/>
+                                <b>OpenRouter:</b> openai/gpt-4o, anthropic/claude-3.5-sonnet,
+                                google/gemini-2.0-flash-001, meta-llama/llama-3-70b-instruct
+                            </div>
+                        </setting>
+                        <setting id="helpbot_max_tokens_setting"
+                            string="Max Response Tokens"
+                            help="Maximum number of tokens in the AI response">
+                            <field name="helpbot_max_tokens"/>
+                        </setting>
+                    </block>
+                </app_settings_block>
+            </xpath>
+        </field>
+    </record>
+</odoo>
