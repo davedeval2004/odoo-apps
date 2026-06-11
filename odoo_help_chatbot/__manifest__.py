@@ -27,6 +27,7 @@ Supported Providers:
     """,
 
     'author': 'Flowient',
+    'website':'http://www.floient.in',
     'maintainer': 'Flowient',
     'license': 'LGPL-3',
     'price': 10.00,
