@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+    <t t-name="camera_capture_widget.CameraDialog">
+        <Dialog title="'Camera Capture'" size="'lg'">
+            <div class="camera_dialog_content">
+
+                <div t-if="state.errorMessage" class="camera_error_state">
+                    <i class="fa fa-exclamation-triangle fa-3x text-warning"/>
+                    <p class="camera_error_text mt-3">
+                        <t t-esc="state.errorMessage"/>
+                    </p>
+                </div>
+
+                <div t-if="!state.errorMessage" class="camera_preview_wrapper">
+                    <div t-if="!state.captured" class="camera_video_container">
+                        <video t-ref="videoElement"
+                               class="camera_video_feed"
+                               autoplay="true"
+                               playsinline="true"
+                               muted="true"/>
+                        <div t-if="!state.streaming" class="camera_loading_overlay">
+                            <i class="fa fa-spinner fa-spin fa-2x"/>
+                            <span class="ms-2">Starting camera...</span>
+                        </div>
+                    </div>
+
+                    <div t-if="state.captured" class="camera_captured_container">
+                        <img t-att-src="state.capturedImage"
+                             class="camera_captured_image"
+                             alt="Captured"/>
+                    </div>
+                </div>
+
+                <canvas t-ref="canvasElement" class="d-none"/>
+
+                <div class="camera_actions mt-3">
+                    <div t-if="!state.captured and state.streaming" class="camera_controls">
+                        <button class="btn btn-lg btn-primary camera_btn_capture"
+                                t-on-click="onCapture"
+                                title="Capture"
+                                type="button">
+                            <i class="fa fa-camera me-1"/> Capture
+                        </button>
+                        <button t-if="state.hasMultipleCameras"
+                                class="btn btn-lg btn-secondary camera_btn_flip"
+                                t-on-click="onFlipCamera"
+                                title="Switch Camera"
+                                type="button">
+                            <i class="fa fa-refresh me-1"/> Flip
+                        </button>
+                    </div>
+                    <div t-if="state.captured" class="camera_confirm_controls">
+                        <button class="btn btn-lg btn-success camera_btn_confirm"
+                                t-on-click="onConfirm"
+                                title="Use this photo"
+                                type="button">
+                            <i class="fa fa-check me-1"/> Use Photo
+                        </button>
+                        <button class="btn btn-lg btn-warning camera_btn_retake"
+                                t-on-click="onRetake"
+                                title="Retake"
+                                type="button">
+                            <i class="fa fa-undo me-1"/> Retake
+                        </button>
+                    </div>
+                    <button class="btn btn-lg btn-secondary camera_btn_discard ms-2"
+                            t-on-click="onDiscard"
+                            title="Cancel"
+                            type="button">
+                        <i class="fa fa-times me-1"/> Cancel
+                    </button>
+                </div>
+
+            </div>
+        </Dialog>
+    </t>
+
+    <t t-name="camera_capture_widget.CameraImageField" t-inherit="web.ImageField" t-inherit-mode="primary">
+        <xpath expr="//FileUploader" position="after">
+            <button class="o_camera_file_button btn btn-light border-0 rounded-circle m-1 p-1"
+                    t-on-click="onCameraClick"
+                    data-tooltip="Camera"
+                    aria-label="Capture from Camera"
+                    type="button">
+                <i class="fa fa-camera fa-fw"/>
+            </button>
+        </xpath>
+    </t>
+
+</templates>
