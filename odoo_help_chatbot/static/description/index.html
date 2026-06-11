@@ -44,7 +44,7 @@
         .section-sub { font-size: .98rem; color: var(--muted); max-width: 620px; }
         .divider-line {
             width: 52px; height: 4px; border-radius: 2px;
-            background: linear-gradient(90deg, var(--brand), var(--accent));
+            background-color: var(--brand);
             margin: 18px 0 36px;
         }
         section { padding: 72px 0; }
@@ -53,25 +53,13 @@
         /* ── HERO ──────────────────────────────────── */
         .hero {
             position: relative;
-            background: linear-gradient(135deg, #2d1b2e 0%, #4e3248 40%, #714B67 70%, #9b6b8b 100%);
+            background-color: #4e3248;
             padding: 80px 28px 90px;
             overflow: hidden;
             text-align: center;
         }
-        .hero::before {
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background:
-                radial-gradient(ellipse 60% 80% at 10% 20%, rgba(232,168,124,.18) 0%, transparent 60%),
-                radial-gradient(ellipse 50% 70% at 85% 75%, rgba(155,107,139,.25) 0%, transparent 55%);
-        }
-        .hero-grid-lines {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: .06;
-            background-image:
-                linear-gradient(rgba(255,255,255,.6) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,.6) 1px, transparent 1px);
-            background-size: 48px 48px;
-        }
+        .hero::before { display: none; }
+        .hero-grid-lines { display: none; }
         .hero-inner { position: relative; z-index: 1; }
 
         .hero-icon-wrap {
@@ -167,7 +155,7 @@
         .feat-card::before {
             content: '';
             position: absolute; top: 0; left: 0; right: 0; height: 3px;
-            background: linear-gradient(90deg, var(--brand), var(--accent));
+            background-color: var(--brand);
             opacity: 0; transition: opacity .22s;
         }
         .feat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
@@ -175,7 +163,7 @@
 
         .feat-icon {
             width: 52px; height: 52px; border-radius: var(--radius-md);
-            background: linear-gradient(135deg, var(--brand), var(--brand-lt));
+            background-color: var(--brand);
             display: flex; align-items: center; justify-content: center;
             margin-bottom: 18px; box-shadow: 0 4px 12px rgba(113,75,103,.22);
         }
@@ -194,7 +182,7 @@
         }
         .step-num-circle {
             width: 44px; height: 44px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--brand), var(--brand-lt));
+            background-color: var(--brand);
             color: #fff; font-weight: 800; font-size: .95rem;
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 4px 14px rgba(113,75,103,.3);
@@ -202,7 +190,7 @@
         }
         .step-connector {
             width: 2px; flex: 1; min-height: 24px;
-            background: linear-gradient(180deg, var(--brand-lt), var(--border));
+            background-color: var(--border);
             margin: 4px 0;
         }
         .step-row:last-child .step-connector { display: none; }
@@ -230,7 +218,7 @@
         .provider-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
         .provider-header {
             padding: 20px 22px 18px;
-            background: linear-gradient(135deg, var(--brand-dk), var(--brand));
+            background-color: var(--brand-dk);
         }
         .provider-logo {
             display: flex; align-items: center; gap: 10px; margin-bottom: 4px;
@@ -273,7 +261,7 @@
             box-shadow: var(--shadow-sm);
         }
         .config-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
-        .config-table thead { background: linear-gradient(135deg, var(--brand-dk), var(--brand)); }
+        .config-table thead { background-color: var(--brand-dk); }
         .config-table th {
             padding: 14px 20px; text-align: left;
             font-size: .8rem; font-weight: 700; color: #fff;
@@ -355,16 +343,12 @@
 
         /* ── CTA ───────────────────────────────────── */
         .cta-section {
-            background: linear-gradient(135deg, #2d1b2e 0%, var(--brand-dk) 50%, var(--brand) 100%);
+            background-color: var(--brand-dk);
             padding: 72px 28px;
             text-align: center;
             position: relative; overflow: hidden;
         }
-        .cta-section::before {
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(ellipse 70% 90% at 50% 120%, rgba(232,168,124,.2), transparent 60%);
-        }
+        .cta-section::before { display: none; }
         .cta-inner { position: relative; z-index: 1; max-width: 580px; margin: 0 auto; }
         .cta-section .badge { background: rgba(255,255,255,.15); color: rgba(255,255,255,.9); margin-bottom: 20px; }
         .cta-section h2 { font-size: 2rem; font-weight: 900; color: #fff; line-height: 1.2; margin-bottom: 16px; }
@@ -389,7 +373,7 @@
 <body>
 
 <!-- ══════════════════════ HERO ══════════════════════ -->
-<div class="hero">
+<div class="hero" style="background-color:#4e3248;padding:80px 28px 90px;text-align:center;position:relative;overflow:hidden;">
     <div class="hero-grid-lines"></div>
     <div class="hero-inner">
 

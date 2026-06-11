@@ -18,22 +18,23 @@
 
         /* ── Hero ── */
         .hero {
-            background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
+            background-color: #0d47a1;
             border-radius: 12px;
             padding: 48px 40px;
             text-align: center;
             color: #fff;
             margin-bottom: 40px;
         }
-        .hero h1 { font-size: 2.4rem; font-weight: 700; margin: 0 0 12px; }
+        .hero h1 { font-size: 2.4rem; font-weight: 700; margin: 0 0 12px; color: #fff; }
         .hero p {
-            font-size: 1.15rem; opacity: 0.92; margin: 0 0 24px;
-            max-width: 600px; margin-left: auto; margin-right: auto;
+            font-size: 1.15rem; margin: 0 0 24px;
+            max-width: 600px; margin-left: auto; margin-right: auto; color: #dce8ff;
         }
         .hero-pills { display: inline-flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
         .hero-pill {
-            background: rgba(255,255,255,0.2);
-            padding: 6px 16px; border-radius: 20px; font-size: 0.85rem;
+            background-color: rgba(255,255,255,0.25);
+            border: 1px solid rgba(255,255,255,0.4);
+            padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; color: #fff;
         }
 
         /* ── Section ── */
@@ -43,7 +44,7 @@
 
         /* ── Feature cards ── */
         .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .feat-card { background: #f7f9fc; border-radius: 10px; padding: 20px; }
+        .feat-card { background-color: #f0f4ff; border-radius: 10px; padding: 20px; border-left: 4px solid #1a73e8; }
         .feat-icon { font-size: 1.8rem; margin-bottom: 8px; }
         .feat-card h3 { font-size: 1rem; font-weight: 600; margin: 0 0 6px; }
         .feat-card p  { font-size: 0.9rem; color: #555; margin: 0; }
@@ -51,7 +52,7 @@
         /* ── Steps ── */
         .step-row { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 16px; }
         .step-num {
-            background: #1a73e8; color: #fff;
+            background-color: #1a73e8; color: #fff;
             width: 36px; height: 36px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             font-weight: 700; flex-shrink: 0; font-size: 0.95rem;
@@ -103,13 +104,13 @@
 <div class="page-wrap">
 
     <!-- Hero Banner -->
-    <div class="hero">
-        <h1>Web Camera Widget</h1>
-        <p>Capture images directly from your device's camera inside any Odoo form view. No plugins, no extra software.</p>
+    <div class="hero" style="background-color:#0d47a1;border-radius:12px;padding:48px 40px;text-align:center;color:#fff;margin-bottom:40px;">
+        <h1 style="font-size:2.2rem;font-weight:700;margin:0 0 12px;color:#fff;">Web Camera Widget</h1>
+        <p style="font-size:1.05rem;margin:0 0 24px;color:#dce8ff;">Capture images directly from your device's camera inside any Odoo form view. No plugins, no extra software.</p>
         <div class="hero-pills">
-            <span class="hero-pill">Odoo 19</span>
-            <span class="hero-pill">All Browsers</span>
-            <span class="hero-pill">Desktop &amp; Mobile</span>
+            <span class="hero-pill" style="background-color:rgba(255,255,255,0.25);border:1px solid rgba(255,255,255,0.4);padding:6px 16px;border-radius:20px;font-size:0.85rem;color:#fff;">Odoo 19</span>
+            <span class="hero-pill" style="background-color:rgba(255,255,255,0.25);border:1px solid rgba(255,255,255,0.4);padding:6px 16px;border-radius:20px;font-size:0.85rem;color:#fff;">All Browsers</span>
+            <span class="hero-pill" style="background-color:rgba(255,255,255,0.25);border:1px solid rgba(255,255,255,0.4);padding:6px 16px;border-radius:20px;font-size:0.85rem;color:#fff;">Desktop &amp; Mobile</span>
         </div>
     </div>
 
