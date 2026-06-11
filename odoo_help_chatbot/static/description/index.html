@@ -60,13 +60,13 @@
         }
         .hero::before {
             content: '';
-            position: absolute; inset: 0;
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background:
                 radial-gradient(ellipse 60% 80% at 10% 20%, rgba(232,168,124,.18) 0%, transparent 60%),
                 radial-gradient(ellipse 50% 70% at 85% 75%, rgba(155,107,139,.25) 0%, transparent 55%);
         }
         .hero-grid-lines {
-            position: absolute; inset: 0; opacity: .06;
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: .06;
             background-image:
                 linear-gradient(rgba(255,255,255,.6) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255,255,255,.6) 1px, transparent 1px);
@@ -362,7 +362,7 @@
         }
         .cta-section::before {
             content: '';
-            position: absolute; inset: 0;
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background: radial-gradient(ellipse 70% 90% at 50% 120%, rgba(232,168,124,.2), transparent 60%);
         }
         .cta-inner { position: relative; z-index: 1; max-width: 580px; margin: 0 auto; }
