@@ -1,859 +1,375 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Help Chatbot – AI-Powered Odoo Assistant</title>
-    <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-        :root {
-            --brand:     #714B67;
-            --brand-dk:  #4e3248;
-            --brand-lt:  #9b6b8b;
-            --brand-xl:  #f3edf7;
-            --accent:    #e8a87c;
-            --text:      #1e1e2e;
-            --muted:     #6b7280;
-            --border:    #e8e0f0;
-            --card-bg:   #ffffff;
-            --bg-alt:    #faf8fc;
-            --radius-lg: 20px;
-            --radius-md: 14px;
-            --radius-sm: 8px;
-            --shadow-sm: 0 2px 8px rgba(113,75,103,.08);
-            --shadow-md: 0 8px 24px rgba(113,75,103,.14);
-            --shadow-lg: 0 20px 48px rgba(113,75,103,.18);
-        }
-
-        html { scroll-behavior: smooth; }
-        body { font-family: 'Segoe UI', system-ui, -apple-system, Arial, sans-serif; color: var(--text); background: #fff; line-height: 1.65; }
-
-        /* ── Utilities ─────────────────────────────── */
-        .container { max-width: 980px; margin: 0 auto; padding: 0 28px; }
-        .badge {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: var(--brand-xl); color: var(--brand);
-            padding: 4px 14px; border-radius: 20px;
-            font-size: .75rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
-        }
-        .section-title {
-            font-size: 1.75rem; font-weight: 800; color: var(--text);
-            line-height: 1.25; margin: 12px 0 6px;
-        }
-        .section-sub { font-size: .98rem; color: var(--muted); max-width: 620px; }
-        .divider-line {
-            width: 52px; height: 4px; border-radius: 2px;
-            background-color: var(--brand);
-            margin: 18px 0 36px;
-        }
-        section { padding: 72px 0; }
-        section.alt { background: var(--bg-alt); }
-
-        /* ── HERO ──────────────────────────────────── */
-        .hero {
-            position: relative;
-            background-color: #4e3248;
-            padding: 80px 28px 90px;
-            overflow: hidden;
-            text-align: center;
-        }
-        .hero::before { display: none; }
-        .hero-grid-lines { display: none; }
-        .hero-inner { position: relative; z-index: 1; }
-
-        .hero-icon-wrap {
-            display: inline-flex; align-items: center; justify-content: center;
-            width: 84px; height: 84px; border-radius: 24px;
-            background: rgba(255,255,255,.15);
-            border: 2px solid rgba(255,255,255,.3);
-            backdrop-filter: blur(8px);
-            margin-bottom: 28px;
-            box-shadow: 0 8px 32px rgba(0,0,0,.25);
-        }
-        .hero-icon-wrap svg { width: 42px; height: 42px; fill: #fff; }
-
-        .hero h1 {
-            font-size: 2.8rem; font-weight: 900; color: #fff;
-            line-height: 1.15; letter-spacing: -.02em;
-            text-shadow: 0 2px 20px rgba(0,0,0,.3);
-            max-width: 700px; margin: 0 auto 18px;
-        }
-        .hero h1 span { color: var(--accent); }
-        .hero p {
-            font-size: 1.1rem; color: rgba(255,255,255,.82);
-            max-width: 580px; margin: 0 auto 36px; line-height: 1.7;
-        }
-
-        .hero-pills { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 44px; }
-        .hero-pill {
-            background: rgba(255,255,255,.12);
-            border: 1px solid rgba(255,255,255,.25);
-            color: rgba(255,255,255,.9);
-            padding: 6px 16px; border-radius: 20px;
-            font-size: .82rem; font-weight: 600;
-            backdrop-filter: blur(6px);
-        }
-
-        .hero-stats {
-            display: flex; flex-wrap: wrap; gap: 0; justify-content: center;
-            background: rgba(255,255,255,.10);
-            border: 1px solid rgba(255,255,255,.18);
-            border-radius: var(--radius-lg);
-            backdrop-filter: blur(12px);
-            overflow: hidden; max-width: 640px; margin: 0 auto;
-        }
-        .hero-stat {
-            flex: 1; min-width: 140px;
-            padding: 20px 24px; text-align: center;
-            border-right: 1px solid rgba(255,255,255,.12);
-        }
-        .hero-stat:last-child { border-right: none; }
-        .hero-stat-num { font-size: 1.9rem; font-weight: 900; color: #fff; line-height: 1; }
-        .hero-stat-num span { color: var(--accent); }
-        .hero-stat-label { font-size: .72rem; color: rgba(255,255,255,.65); text-transform: uppercase; letter-spacing: .06em; margin-top: 4px; }
-
-        /* ── OVERVIEW STRIP ────────────────────────── */
-        .overview-strip {
-            background: var(--brand);
-            padding: 36px 28px;
-        }
-        .overview-inner {
-            max-width: 980px; margin: 0 auto;
-            display: flex; flex-wrap: wrap; gap: 28px; align-items: center;
-        }
-        .overview-text { flex: 1; min-width: 260px; }
-        .overview-text p { font-size: .97rem; color: rgba(255,255,255,.85); line-height: 1.7; }
-        .overview-text p strong { color: #fff; }
-        .overview-cta-text {
-            display: flex; flex-direction: column; gap: 10px;
-            flex-shrink: 0;
-        }
-        .overview-highlight {
-            display: flex; align-items: center; gap: 10px;
-            background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
-            border-radius: var(--radius-sm); padding: 10px 16px;
-            color: #fff; font-size: .88rem; font-weight: 600;
-        }
-        .overview-highlight svg { width: 18px; height: 18px; fill: var(--accent); flex-shrink: 0; }
-
-        /* ── FEATURES ──────────────────────────────── */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 22px;
-        }
-        .feat-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 28px 24px 26px;
-            box-shadow: var(--shadow-sm);
-            transition: transform .22s, box-shadow .22s;
-            position: relative; overflow: hidden;
-        }
-        .feat-card::before {
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; height: 3px;
-            background-color: var(--brand);
-            opacity: 0; transition: opacity .22s;
-        }
-        .feat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
-        .feat-card:hover::before { opacity: 1; }
-
-        .feat-icon {
-            width: 52px; height: 52px; border-radius: var(--radius-md);
-            background-color: var(--brand);
-            display: flex; align-items: center; justify-content: center;
-            margin-bottom: 18px; box-shadow: 0 4px 12px rgba(113,75,103,.22);
-        }
-        .feat-icon svg { width: 24px; height: 24px; fill: #fff; }
-        .feat-card h3 { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
-        .feat-card p  { font-size: .88rem; color: var(--muted); line-height: 1.65; }
-
-        /* ── HOW IT WORKS ──────────────────────────── */
-        .steps-wrap { display: flex; flex-direction: column; gap: 0; }
-        .step-row {
-            display: flex; gap: 24px; align-items: stretch;
-        }
-        .step-left {
-            display: flex; flex-direction: column; align-items: center;
-            width: 56px; flex-shrink: 0;
-        }
-        .step-num-circle {
-            width: 44px; height: 44px; border-radius: 50%;
-            background-color: var(--brand);
-            color: #fff; font-weight: 800; font-size: .95rem;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 14px rgba(113,75,103,.3);
-            flex-shrink: 0; position: relative; z-index: 1;
-        }
-        .step-connector {
-            width: 2px; flex: 1; min-height: 24px;
-            background-color: var(--border);
-            margin: 4px 0;
-        }
-        .step-row:last-child .step-connector { display: none; }
-        .step-body {
-            flex: 1; padding: 4px 0 36px;
-        }
-        .step-body h3 { font-size: 1.02rem; font-weight: 700; color: var(--text); margin-bottom: 6px; }
-        .step-body p  { font-size: .9rem; color: var(--muted); line-height: 1.65; }
-        .step-body em { color: var(--brand); font-style: normal; font-weight: 600; }
-
-        /* ── AI PROVIDERS ──────────────────────────── */
-        .providers-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-            gap: 22px;
-        }
-        .provider-card {
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border);
-            background: var(--card-bg);
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
-            transition: box-shadow .22s, transform .22s;
-        }
-        .provider-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
-        .provider-header {
-            padding: 20px 22px 18px;
-            background-color: var(--brand-dk);
-        }
-        .provider-logo {
-            display: flex; align-items: center; gap: 10px; margin-bottom: 4px;
-        }
-        .provider-logo-icon {
-            width: 36px; height: 36px; border-radius: 10px;
-            background: rgba(255,255,255,.18);
-            display: flex; align-items: center; justify-content: center;
-        }
-        .provider-logo-icon svg { width: 20px; height: 20px; fill: #fff; }
-        .provider-name { font-size: 1rem; font-weight: 800; color: #fff; }
-        .provider-tag-pill {
-            display: inline-block; background: rgba(255,255,255,.18);
-            color: rgba(255,255,255,.9); border-radius: 12px;
-            padding: 2px 10px; font-size: .7rem; font-weight: 700;
-            letter-spacing: .04em; text-transform: uppercase; margin-top: 4px;
-        }
-        .provider-body { padding: 18px 22px 20px; }
-        .provider-body ul { list-style: none; display: flex; flex-direction: column; gap: 7px; }
-        .provider-body li {
-            display: flex; align-items: center; gap: 8px;
-            font-size: .85rem; color: var(--text);
-        }
-        .provider-body li::before {
-            content: '';
-            width: 6px; height: 6px; border-radius: 50%;
-            background: var(--brand); flex-shrink: 0;
-        }
-        .provider-body li em { font-style: normal; font-size: .75rem; color: var(--accent); font-weight: 700; }
-        .provider-note {
-            margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);
-            font-size: .8rem; color: var(--muted);
-        }
-
-        /* ── CONFIG TABLE ──────────────────────────── */
-        .config-wrap {
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border);
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
-        }
-        .config-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
-        .config-table thead { background-color: var(--brand-dk); }
-        .config-table th {
-            padding: 14px 20px; text-align: left;
-            font-size: .8rem; font-weight: 700; color: #fff;
-            letter-spacing: .04em; text-transform: uppercase;
-        }
-        .config-table td { padding: 14px 20px; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--muted); }
-        .config-table tr:last-child td { border-bottom: none; }
-        .config-table tr:nth-child(odd) td { background: var(--bg-alt); }
-        .config-table tr:nth-child(even) td { background: #fff; }
-        .config-table td:first-child { font-weight: 700; color: var(--text); }
-        code {
-            background: var(--brand-xl); color: var(--brand);
-            padding: 2px 8px; border-radius: var(--radius-sm);
-            font-size: .82em; font-weight: 600; font-family: 'Consolas', monospace;
-        }
-        .config-info {
-            display: flex; align-items: flex-start; gap: 12px;
-            background: var(--brand-xl); border-radius: var(--radius-md);
-            padding: 14px 18px; margin-top: 20px;
-            border-left: 4px solid var(--brand);
-        }
-        .config-info svg { width: 18px; height: 18px; fill: var(--brand); flex-shrink: 0; margin-top: 1px; }
-        .config-info p { font-size: .88rem; color: var(--brand-dk); }
-
-        /* ── USE CASES ─────────────────────────────── */
-        .usecases-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 18px;
-        }
-        .usecase-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            padding: 22px 20px;
-            box-shadow: var(--shadow-sm);
-            transition: transform .2s, box-shadow .2s;
-        }
-        .usecase-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
-        .uc-icon {
-            width: 44px; height: 44px; border-radius: var(--radius-sm);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.4rem; margin-bottom: 12px;
-        }
-        .uc-dept { font-size: .8rem; font-weight: 700; color: var(--brand); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
-        .usecase-card p { font-size: .88rem; color: var(--muted); line-height: 1.6; }
-
-        /* ── TECH DETAILS ──────────────────────────── */
-        .tech-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 22px;
-        }
-        .tech-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 24px 22px;
-            box-shadow: var(--shadow-sm);
-        }
-        .tech-card-header {
-            display: flex; align-items: center; gap: 10px;
-            margin-bottom: 18px;
-        }
-        .tech-card-icon {
-            width: 38px; height: 38px; border-radius: var(--radius-sm);
-            background: var(--brand-xl); display: flex; align-items: center; justify-content: center;
-        }
-        .tech-card-icon svg { width: 20px; height: 20px; fill: var(--brand); }
-        .tech-card-title { font-size: .95rem; font-weight: 700; color: var(--text); }
-        .tech-item {
-            display: flex; justify-content: space-between; align-items: flex-start;
-            padding: 7px 0; border-bottom: 1px solid var(--border);
-            font-size: .85rem; gap: 12px;
-        }
-        .tech-item:last-child { border-bottom: none; }
-        .tech-key { color: var(--muted); flex-shrink: 0; }
-        .tech-val { color: var(--text); font-weight: 600; text-align: right; }
-
-        /* ── CTA ───────────────────────────────────── */
-        .cta-section {
-            background-color: var(--brand-dk);
-            padding: 72px 28px;
-            text-align: center;
-            position: relative; overflow: hidden;
-        }
-        .cta-section::before { display: none; }
-        .cta-inner { position: relative; z-index: 1; max-width: 580px; margin: 0 auto; }
-        .cta-section .badge { background: rgba(255,255,255,.15); color: rgba(255,255,255,.9); margin-bottom: 20px; }
-        .cta-section h2 { font-size: 2rem; font-weight: 900; color: #fff; line-height: 1.2; margin-bottom: 16px; }
-        .cta-section p { font-size: 1rem; color: rgba(255,255,255,.78); line-height: 1.7; }
-        .cta-meta { display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; margin-top: 32px; }
-        .cta-meta-item {
-            display: flex; align-items: center; gap: 8px;
-            color: rgba(255,255,255,.75); font-size: .88rem;
-        }
-        .cta-meta-item svg { width: 16px; height: 16px; fill: var(--accent); }
-
-        /* ── Responsive ────────────────────────────── */
-        @media(max-width: 640px) {
-            .hero h1 { font-size: 2rem; }
-            .hero-stat { min-width: 100px; padding: 14px 16px; }
-            .hero-stat-num { font-size: 1.5rem; }
-            section { padding: 52px 0; }
-            .section-title { font-size: 1.45rem; }
-        }
-    </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Help Chatbot – AI-Powered Odoo Assistant</title>
 </head>
-<body>
+<body style="font-family:'Segoe UI',system-ui,Arial,sans-serif;color:#1e1e2e;line-height:1.65;margin:0;padding:0;background:#fff;">
 
-<!-- ══════════════════════ HERO ══════════════════════ -->
-<div class="hero" style="background-color:#4e3248;padding:80px 28px 90px;text-align:center;position:relative;overflow:hidden;">
-    <div class="hero-grid-lines"></div>
-    <div class="hero-inner">
-
-        <div class="hero-icon-wrap">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
-            </svg>
+<!-- HERO -->
+<div style="background-color:#4e3248;padding:64px 28px 72px;text-align:center;color:#fff;">
+    <div style="max-width:700px;margin:0 auto;">
+        <span style="background-color:rgba(255,255,255,0.15);color:rgba(255,255,255,0.9);padding:4px 14px;border-radius:20px;font-size:0.75rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;display:inline-block;margin-bottom:20px;">AI-Powered Odoo Assistant</span>
+        <h1 style="font-size:2.6rem;font-weight:900;color:#fff;margin:0 0 16px;line-height:1.15;">Help Chatbot for <span style="color:#e8a87c;">Odoo</span></h1>
+        <p style="font-size:1.1rem;color:rgba(255,255,255,0.82);margin:0 0 28px;">An AI-powered assistant that gives every user instant, step-by-step guidance for any Odoo workflow — right inside the top bar.</p>
+        <div style="margin-bottom:36px;">
+            <span style="background-color:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.9);padding:6px 16px;border-radius:20px;font-size:0.82rem;font-weight:600;margin:4px;display:inline-block;">&#9889; OpenAI GPT-4o</span>
+            <span style="background-color:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.9);padding:6px 16px;border-radius:20px;font-size:0.82rem;font-weight:600;margin:4px;display:inline-block;">&#9889; Anthropic Claude</span>
+            <span style="background-color:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.9);padding:6px 16px;border-radius:20px;font-size:0.82rem;font-weight:600;margin:4px;display:inline-block;">&#9889; OpenRouter</span>
+            <span style="background-color:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.9);padding:6px 16px;border-radius:20px;font-size:0.82rem;font-weight:600;margin:4px;display:inline-block;">Odoo 19.0</span>
+            <span style="background-color:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.9);padding:6px 16px;border-radius:20px;font-size:0.82rem;font-weight:600;margin:4px;display:inline-block;">LGPL-3</span>
         </div>
-
-        <h1>Help Chatbot for <span>Odoo</span></h1>
-        <p>An AI-powered assistant that gives every user instant, step-by-step guidance for any Odoo workflow — right inside the top bar.</p>
-
-        <div class="hero-pills">
-            <span class="hero-pill">&#9889; OpenAI GPT-4o</span>
-            <span class="hero-pill">&#9889; Anthropic Claude</span>
-            <span class="hero-pill">&#9889; OpenRouter</span>
-            <span class="hero-pill">Odoo 19.0</span>
-            <span class="hero-pill">LGPL-3</span>
-        </div>
-
-        <div class="hero-stats">
-            <div class="hero-stat">
-                <div class="hero-stat-num">3<span>+</span></div>
-                <div class="hero-stat-label">AI Providers</div>
-            </div>
-            <div class="hero-stat">
-                <div class="hero-stat-num">9<span>+</span></div>
-                <div class="hero-stat-label">Key Features</div>
-            </div>
-            <div class="hero-stat">
-                <div class="hero-stat-num">1<span>-click</span></div>
-                <div class="hero-stat-label">Setup</div>
-            </div>
-            <div class="hero-stat">
-                <div class="hero-stat-num"><span>$</span>10</div>
-                <div class="hero-stat-label">One-time Price</div>
-            </div>
-        </div>
-
+        <!-- Stats bar -->
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:640px;margin:0 auto;background-color:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18);border-radius:16px;overflow:hidden;">
+            <tr>
+                <td style="text-align:center;padding:20px 24px;border-right:1px solid rgba(255,255,255,0.12);">
+                    <div style="font-size:1.9rem;font-weight:900;color:#fff;">3<span style="color:#e8a87c;">+</span></div>
+                    <div style="font-size:0.72rem;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:0.06em;margin-top:4px;">AI Providers</div>
+                </td>
+                <td style="text-align:center;padding:20px 24px;border-right:1px solid rgba(255,255,255,0.12);">
+                    <div style="font-size:1.9rem;font-weight:900;color:#fff;">9<span style="color:#e8a87c;">+</span></div>
+                    <div style="font-size:0.72rem;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:0.06em;margin-top:4px;">Key Features</div>
+                </td>
+                <td style="text-align:center;padding:20px 24px;border-right:1px solid rgba(255,255,255,0.12);">
+                    <div style="font-size:1.9rem;font-weight:900;color:#fff;">1<span style="color:#e8a87c;">-click</span></div>
+                    <div style="font-size:0.72rem;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:0.06em;margin-top:4px;">Setup</div>
+                </td>
+                <td style="text-align:center;padding:20px 24px;">
+                    <div style="font-size:1.9rem;font-weight:900;color:#fff;"><span style="color:#e8a87c;">$</span>10</div>
+                    <div style="font-size:0.72rem;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:0.06em;margin-top:4px;">One-time Price</div>
+                </td>
+            </tr>
+        </table>
     </div>
 </div>
 
-<!-- ══════════════════════ OVERVIEW STRIP ══════════════════════ -->
-<div class="overview-strip">
-    <div class="overview-inner">
-        <div class="overview-text">
-            <p>
-                Help Chatbot adds a <strong>"?" button</strong> to the Odoo systray (top bar). Clicking it opens an
-                intelligent chat panel powered by your choice of AI. Users can ask any question about Odoo workflows
-                and receive instant, <strong>business-language</strong> answers with numbered navigation steps — no IT ticket needed.
-            </p>
-        </div>
-        <div class="overview-cta-text">
-            <div class="overview-highlight">
-                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-                No code or technical jargon
-            </div>
-            <div class="overview-highlight">
-                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-                Structured, actionable responses
-            </div>
-            <div class="overview-highlight">
-                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-                Works with any Odoo module
-            </div>
+<!-- OVERVIEW STRIP -->
+<div style="background-color:#714B67;padding:36px 28px;">
+    <div style="max-width:980px;margin:0 auto;">
+        <p style="font-size:0.97rem;color:rgba(255,255,255,0.85);line-height:1.7;margin:0 0 16px;">
+            Help Chatbot adds a <strong style="color:#fff;">"?" button</strong> to the Odoo systray (top bar). Clicking it opens an intelligent chat panel powered by your choice of AI. Users can ask any question about Odoo workflows and receive instant, <strong style="color:#fff;">business-language</strong> answers with numbered navigation steps — no IT ticket needed.
+        </p>
+        <span style="background-color:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:8px 14px;border-radius:6px;font-size:0.86rem;font-weight:600;display:inline-block;margin:4px;">&#10003; No code or technical jargon</span>
+        <span style="background-color:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:8px 14px;border-radius:6px;font-size:0.86rem;font-weight:600;display:inline-block;margin:4px;">&#10003; Structured, actionable responses</span>
+        <span style="background-color:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:8px 14px;border-radius:6px;font-size:0.86rem;font-weight:600;display:inline-block;margin:4px;">&#10003; Works with any Odoo module</span>
+    </div>
+</div>
+
+<!-- KEY FEATURES -->
+<div style="padding:60px 28px;background-color:#fff;">
+    <div style="max-width:980px;margin:0 auto;">
+        <span style="background-color:#f3edf7;color:#714B67;padding:4px 14px;border-radius:20px;font-size:0.75rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;display:inline-block;margin-bottom:12px;">&#9733; Features</span>
+        <h2 style="font-size:1.75rem;font-weight:800;color:#1e1e2e;margin:0 0 8px;">Everything your team needs</h2>
+        <div style="width:52px;height:4px;background-color:#714B67;border-radius:2px;margin:0 0 16px;"></div>
+        <p style="font-size:0.98rem;color:#6b7280;margin:0 0 36px;">All features live inside Odoo — zero context switching, zero extra tools.</p>
+
+        <table width="100%" cellpadding="0" cellspacing="0">
+            <tr valign="top">
+                <td width="33%" style="padding:0 8px 16px 0;">
+                    <div style="background-color:#fff;border:1px solid #e8e0f0;border-radius:16px;padding:24px 20px;height:100%;">
+                        <div style="width:48px;height:48px;border-radius:12px;background-color:#714B67;text-align:center;line-height:48px;margin-bottom:16px;font-size:1.4rem;">&#128172;</div>
+                        <strong style="font-size:1rem;font-weight:700;color:#1e1e2e;display:block;margin-bottom:8px;">Systray Chat Panel</strong>
+                        <span style="font-size:0.88rem;color:#6b7280;">A floating "?" icon in the Odoo top bar opens a full-featured chat window. Always one click away from any screen.</span>
+                    </div>
+                </td>
+                <td width="33%" style="padding:0 8px 16px;">
+                    <div style="background-color:#fff;border:1px solid #e8e0f0;border-radius:16px;padding:24px 20px;height:100%;">
+                        <div style="width:48px;height:48px;border-radius:12px;background-color:#714B67;text-align:center;line-height:48px;margin-bottom:16px;font-size:1.4rem;">&#128247;</div>
+                        <strong style="font-size:1rem;font-weight:700;color:#1e1e2e;display:block;margin-bottom:8px;">Screenshot Attachment</strong>
+                        <span style="font-size:0.88rem;color:#6b7280;">Attach any Odoo screenshot in chat. The AI analyses the image and gives guidance specific to what it sees on screen.</span>
+                    </div>
+                </td>
+                <td width="33%" style="padding:0 0 16px 8px;">
+                    <div style="background-color:#fff;border:1px solid #e8e0f0;border-radius:16px;padding:24px 20px;height:100%;">
+                        <div style="width:48px;height:48px;border-radius:12px;background-color:#714B67;text-align:center;line-height:48px;margin-bottom:16px;font-size:1.4rem;">&#129504;</div>
+                        <strong style="font-size:1rem;font-weight:700;color:#1e1e2e;display:block;margin-bottom:8px;">Multi-Provider AI</strong>
+                        <span style="font-size:0.88rem;color:#6b7280;">Supports OpenAI (GPT-4o), Anthropic (Claude), and OpenRouter. Switch providers anytime in General Settings.</span>
+                    </div>
+                </td>
+            </tr>
+            <tr valign="top">
+                <td style="padding:0 8px 16px 0;">
+                    <div style="background-color:#fff;border:1px solid #e8e0f0;border-radius:16px;padding:24px 20px;height:100%;">
+                        <div style="width:48px;height:48px;border-radius:12px;background-color:#714B67;text-align:center;line-height:48px;margin-bottom:16px;font-size:1.4rem;">&#128260;</div>
+                        <strong style="font-size:1rem;font-weight:700;color:#1e1e2e;display:block;margin-bottom:8px;">Conversation History</strong>
+                        <span style="font-size:0.88rem;color:#6b7280;">Each user's chat history is stored per session. Resume where you left off, or start fresh anytime.</span>
+                    </div>
+                </td>
+                <td style="padding:0 8px 16px;">
+                    <div style="background-color:#fff;border:1px solid #e8e0f0;border-radius:16px;padding:24px 20px;height:100%;">
+                        <div style="width:48px;height:48px;border-radius:12px;background-color:#714B67;text-align:center;line-height:48px;margin-bottom:16px;font-size:1.4rem;">&#128274;</div>
+                        <strong style="font-size:1rem;font-weight:700;color:#1e1e2e;display:block;margin-bottom:8px;">User-Scoped Security</strong>
+                        <span style="font-size:0.88rem;color:#6b7280;">Each user sees only their own messages. Odoo record rules ensure full data privacy across all users.</span>
+                    </div>
+                </td>
+                <td style="padding:0 0 16px 8px;">
+                    <div style="background-color:#fff;border:1px solid #e8e0f0;border-radius:16px;padding:24px 20px;height:100%;">
+                        <div style="width:48px;height:48px;border-radius:12px;background-color:#714B67;text-align:center;line-height:48px;margin-bottom:16px;font-size:1.4rem;">&#9889;</div>
+                        <strong style="font-size:1rem;font-weight:700;color:#1e1e2e;display:block;margin-bottom:8px;">Quick Suggestions</strong>
+                        <span style="font-size:0.88rem;color:#6b7280;">Welcome screen shows common question shortcuts — "Can't confirm sales order", "Invoice not posting" — for instant help.</span>
+                    </div>
+                </td>
+            </tr>
+            <tr valign="top">
+                <td style="padding:0 8px 0 0;">
+                    <div style="background-color:#fff;border:1px solid #e8e0f0;border-radius:16px;padding:24px 20px;height:100%;">
+                        <div style="width:48px;height:48px;border-radius:12px;background-color:#714B67;text-align:center;line-height:48px;margin-bottom:16px;font-size:1.4rem;">&#128203;</div>
+                        <strong style="font-size:1rem;font-weight:700;color:#1e1e2e;display:block;margin-bottom:8px;">Structured Responses</strong>
+                        <span style="font-size:0.88rem;color:#6b7280;">Every AI answer follows: The Issue → The Fix → Why It Happens → Pro Tip. Clear and actionable every time.</span>
+                    </div>
+                </td>
+                <td style="padding:0 8px;">
+                    <div style="background-color:#fff;border:1px solid #e8e0f0;border-radius:16px;padding:24px 20px;height:100%;">
+                        <div style="width:48px;height:48px;border-radius:12px;background-color:#714B67;text-align:center;line-height:48px;margin-bottom:16px;font-size:1.4rem;">&#128483;</div>
+                        <strong style="font-size:1rem;font-weight:700;color:#1e1e2e;display:block;margin-bottom:8px;">Business Language Only</strong>
+                        <span style="font-size:0.88rem;color:#6b7280;">The AI never produces code or technical jargon. Users always receive human-friendly, workflow-focused answers.</span>
+                    </div>
+                </td>
+                <td style="padding:0 0 0 8px;">
+                    <div style="background-color:#fff;border:1px solid #e8e0f0;border-radius:16px;padding:24px 20px;height:100%;">
+                        <div style="width:48px;height:48px;border-radius:12px;background-color:#714B67;text-align:center;line-height:48px;margin-bottom:16px;font-size:1.4rem;">&#128241;</div>
+                        <strong style="font-size:1rem;font-weight:700;color:#1e1e2e;display:block;margin-bottom:8px;">Responsive Design</strong>
+                        <span style="font-size:0.88rem;color:#6b7280;">The chat panel adapts to any screen size — fully usable on tablets and mobile browsers within Odoo.</span>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div style="padding:60px 28px;background-color:#faf8fc;">
+    <div style="max-width:980px;margin:0 auto;">
+        <span style="background-color:#f3edf7;color:#714B67;padding:4px 14px;border-radius:20px;font-size:0.75rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;display:inline-block;margin-bottom:12px;">How It Works</span>
+        <h2 style="font-size:1.75rem;font-weight:800;color:#1e1e2e;margin:0 0 8px;">From question to answer in seconds</h2>
+        <div style="width:52px;height:4px;background-color:#714B67;border-radius:2px;margin:0 0 16px;"></div>
+        <p style="font-size:0.98rem;color:#6b7280;margin:0 0 36px;">No technical knowledge required. Any Odoo user can get expert guidance instantly.</p>
+
+        <table width="100%" cellpadding="0" cellspacing="0">
+            <tr valign="top">
+                <td style="width:56px;">
+                    <div style="width:44px;height:44px;border-radius:50%;background-color:#714B67;color:#fff;font-weight:800;font-size:0.95rem;text-align:center;line-height:44px;">1</div>
+                    <div style="width:2px;background-color:#e8e0f0;margin:4px 0 4px 21px;height:36px;"></div>
+                </td>
+                <td style="padding:2px 0 32px 12px;">
+                    <strong style="font-size:1.02rem;font-weight:700;color:#1e1e2e;display:block;margin-bottom:6px;">Click the "?" Button in the Systray</strong>
+                    <span style="font-size:0.9rem;color:#6b7280;">The Help button lives in the Odoo top navigation bar. Click it from any screen — a smooth chat panel slides up immediately.</span>
+                </td>
+            </tr>
+            <tr valign="top">
+                <td style="width:56px;">
+                    <div style="width:44px;height:44px;border-radius:50%;background-color:#714B67;color:#fff;font-weight:800;font-size:0.95rem;text-align:center;line-height:44px;">2</div>
+                    <div style="width:2px;background-color:#e8e0f0;margin:4px 0 4px 21px;height:36px;"></div>
+                </td>
+                <td style="padding:2px 0 32px 12px;">
+                    <strong style="font-size:1.02rem;font-weight:700;color:#1e1e2e;display:block;margin-bottom:6px;">Type Your Question or Attach a Screenshot</strong>
+                    <span style="font-size:0.9rem;color:#6b7280;">Ask anything: "Why can't I confirm my invoice?", "How do I create a vendor bill?". Optionally attach a screenshot for visual AI analysis.</span>
+                </td>
+            </tr>
+            <tr valign="top">
+                <td style="width:56px;">
+                    <div style="width:44px;height:44px;border-radius:50%;background-color:#714B67;color:#fff;font-weight:800;font-size:0.95rem;text-align:center;line-height:44px;">3</div>
+                    <div style="width:2px;background-color:#e8e0f0;margin:4px 0 4px 21px;height:36px;"></div>
+                </td>
+                <td style="padding:2px 0 32px 12px;">
+                    <strong style="font-size:1.02rem;font-weight:700;color:#1e1e2e;display:block;margin-bottom:6px;">AI Analyses and Responds</strong>
+                    <span style="font-size:0.9rem;color:#6b7280;">The configured AI (OpenAI, Anthropic, or OpenRouter) processes the question and any attached image following a strict business-focused prompt for Odoo.</span>
+                </td>
+            </tr>
+            <tr valign="top">
+                <td style="width:56px;">
+                    <div style="width:44px;height:44px;border-radius:50%;background-color:#714B67;color:#fff;font-weight:800;font-size:0.95rem;text-align:center;line-height:44px;">4</div>
+                    <div style="width:2px;background-color:#e8e0f0;margin:4px 0 4px 21px;height:36px;"></div>
+                </td>
+                <td style="padding:2px 0 32px 12px;">
+                    <strong style="font-size:1.02rem;font-weight:700;color:#1e1e2e;display:block;margin-bottom:6px;">Follow the Step-by-Step Guidance</strong>
+                    <span style="font-size:0.9rem;color:#6b7280;">The response includes: a plain-English explanation, numbered navigation steps (e.g. Sales › Orders › Quotations), the business reason, and a prevention tip.</span>
+                </td>
+            </tr>
+            <tr valign="top">
+                <td style="width:56px;">
+                    <div style="width:44px;height:44px;border-radius:50%;background-color:#714B67;color:#fff;font-weight:800;font-size:0.95rem;text-align:center;line-height:44px;">5</div>
+                </td>
+                <td style="padding:2px 0 0 12px;">
+                    <strong style="font-size:1.02rem;font-weight:700;color:#1e1e2e;display:block;margin-bottom:6px;">Continue the Conversation</strong>
+                    <span style="font-size:0.9rem;color:#6b7280;">Ask follow-up questions in the same session. Start a new session with the "+" button, or clear history with the trash icon at any time.</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<!-- AI PROVIDERS -->
+<div style="padding:60px 28px;background-color:#fff;">
+    <div style="max-width:980px;margin:0 auto;">
+        <span style="background-color:#f3edf7;color:#714B67;padding:4px 14px;border-radius:20px;font-size:0.75rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;display:inline-block;margin-bottom:12px;">AI Providers</span>
+        <h2 style="font-size:1.75rem;font-weight:800;color:#1e1e2e;margin:0 0 8px;">Your choice of AI engine</h2>
+        <div style="width:52px;height:4px;background-color:#714B67;border-radius:2px;margin:0 0 16px;"></div>
+        <p style="font-size:0.98rem;color:#6b7280;margin:0 0 36px;">Pick the provider that fits your organisation. Switch anytime from General Settings — no reinstall needed.</p>
+
+        <table width="100%" cellpadding="0" cellspacing="0">
+            <tr valign="top">
+                <td width="33%" style="padding-right:10px;">
+                    <div style="border:1px solid #e8e0f0;border-radius:16px;overflow:hidden;">
+                        <div style="background-color:#4e3248;padding:20px 22px;">
+                            <strong style="font-size:1rem;font-weight:800;color:#fff;display:block;">OpenAI — GPT</strong>
+                            <span style="background-color:rgba(255,255,255,0.18);color:rgba(255,255,255,0.9);border-radius:12px;padding:2px 10px;font-size:0.7rem;font-weight:700;text-transform:uppercase;display:inline-block;margin-top:6px;">Vision Supported</span>
+                        </div>
+                        <div style="padding:18px 22px 20px;">
+                            <p style="font-size:0.85rem;color:#1e1e2e;margin:0 0 5px;"><strong>gpt-4o</strong> &#9733; Recommended</p>
+                            <p style="font-size:0.85rem;color:#1e1e2e;margin:0 0 5px;">gpt-4</p>
+                            <p style="font-size:0.85rem;color:#1e1e2e;margin:0 0 12px;">gpt-3.5-turbo</p>
+                            <p style="font-size:0.8rem;color:#6b7280;margin:0;border-top:1px solid #e8e0f0;padding-top:12px;">Requires an OpenAI API key from platform.openai.com.</p>
+                        </div>
+                    </div>
+                </td>
+                <td width="33%" style="padding:0 5px;">
+                    <div style="border:1px solid #e8e0f0;border-radius:16px;overflow:hidden;">
+                        <div style="background-color:#4e3248;padding:20px 22px;">
+                            <strong style="font-size:1rem;font-weight:800;color:#fff;display:block;">Anthropic — Claude</strong>
+                            <span style="background-color:rgba(255,255,255,0.18);color:rgba(255,255,255,0.9);border-radius:12px;padding:2px 10px;font-size:0.7rem;font-weight:700;text-transform:uppercase;display:inline-block;margin-top:6px;">Vision Supported</span>
+                        </div>
+                        <div style="padding:18px 22px 20px;">
+                            <p style="font-size:0.85rem;color:#1e1e2e;margin:0 0 5px;"><strong>claude-sonnet-4</strong> &#9733; Recommended</p>
+                            <p style="font-size:0.85rem;color:#1e1e2e;margin:0 0 5px;">claude-3-5-sonnet</p>
+                            <p style="font-size:0.85rem;color:#1e1e2e;margin:0 0 12px;">claude-3-opus</p>
+                            <p style="font-size:0.8rem;color:#6b7280;margin:0;border-top:1px solid #e8e0f0;padding-top:12px;">Requires an Anthropic API key from console.anthropic.com.</p>
+                        </div>
+                    </div>
+                </td>
+                <td width="33%" style="padding-left:10px;">
+                    <div style="border:1px solid #e8e0f0;border-radius:16px;overflow:hidden;">
+                        <div style="background-color:#4e3248;padding:20px 22px;">
+                            <strong style="font-size:1rem;font-weight:800;color:#fff;display:block;">OpenRouter</strong>
+                            <span style="background-color:rgba(255,255,255,0.18);color:rgba(255,255,255,0.9);border-radius:12px;padding:2px 10px;font-size:0.7rem;font-weight:700;text-transform:uppercase;display:inline-block;margin-top:6px;">Default Provider</span>
+                        </div>
+                        <div style="padding:18px 22px 20px;">
+                            <p style="font-size:0.85rem;color:#1e1e2e;margin:0 0 5px;">openai/gpt-4o</p>
+                            <p style="font-size:0.85rem;color:#1e1e2e;margin:0 0 5px;">anthropic/claude-3.5-sonnet</p>
+                            <p style="font-size:0.85rem;color:#1e1e2e;margin:0 0 5px;">google/gemini-2.0-flash-001</p>
+                            <p style="font-size:0.85rem;color:#1e1e2e;margin:0 0 12px;">meta-llama/llama-3-70b-instruct</p>
+                            <p style="font-size:0.8rem;color:#6b7280;margin:0;border-top:1px solid #e8e0f0;padding-top:12px;">Access hundreds of models via a single API key from openrouter.ai.</p>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<!-- CONFIGURATION -->
+<div style="padding:60px 28px;background-color:#faf8fc;">
+    <div style="max-width:980px;margin:0 auto;">
+        <span style="background-color:#f3edf7;color:#714B67;padding:4px 14px;border-radius:20px;font-size:0.75rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;display:inline-block;margin-bottom:12px;">Configuration</span>
+        <h2 style="font-size:1.75rem;font-weight:800;color:#1e1e2e;margin:0 0 8px;">Up and running in under 2 minutes</h2>
+        <div style="width:52px;height:4px;background-color:#714B67;border-radius:2px;margin:0 0 16px;"></div>
+        <p style="font-size:0.98rem;color:#6b7280;margin:0 0 24px;">Go to <strong>Settings → General Settings → Help Chatbot</strong> and fill in four fields.</p>
+
+        <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:1px solid #e8e0f0;border-radius:14px;overflow:hidden;">
+            <tr style="background-color:#4e3248;">
+                <th style="padding:14px 20px;text-align:left;font-size:0.8rem;font-weight:700;color:#fff;letter-spacing:0.04em;text-transform:uppercase;">Setting</th>
+                <th style="padding:14px 20px;text-align:left;font-size:0.8rem;font-weight:700;color:#fff;letter-spacing:0.04em;text-transform:uppercase;">Description</th>
+                <th style="padding:14px 20px;text-align:left;font-size:0.8rem;font-weight:700;color:#fff;letter-spacing:0.04em;text-transform:uppercase;">Example</th>
+            </tr>
+            <tr style="background-color:#faf8fc;">
+                <td style="padding:14px 20px;border-bottom:1px solid #e8e0f0;font-weight:700;color:#1e1e2e;">AI Provider</td>
+                <td style="padding:14px 20px;border-bottom:1px solid #e8e0f0;color:#6b7280;">Select between OpenAI, Anthropic, or OpenRouter</td>
+                <td style="padding:14px 20px;border-bottom:1px solid #e8e0f0;"><code style="background-color:#f3edf7;color:#714B67;padding:2px 8px;border-radius:6px;font-size:0.82em;font-weight:600;">openrouter</code></td>
+            </tr>
+            <tr style="background-color:#fff;">
+                <td style="padding:14px 20px;border-bottom:1px solid #e8e0f0;font-weight:700;color:#1e1e2e;">API Key</td>
+                <td style="padding:14px 20px;border-bottom:1px solid #e8e0f0;color:#6b7280;">API key from your chosen provider — stored securely as a system parameter</td>
+                <td style="padding:14px 20px;border-bottom:1px solid #e8e0f0;"><code style="background-color:#f3edf7;color:#714B67;padding:2px 8px;border-radius:6px;font-size:0.82em;font-weight:600;">sk-••••••</code></td>
+            </tr>
+            <tr style="background-color:#faf8fc;">
+                <td style="padding:14px 20px;border-bottom:1px solid #e8e0f0;font-weight:700;color:#1e1e2e;">Model Name</td>
+                <td style="padding:14px 20px;border-bottom:1px solid #e8e0f0;color:#6b7280;">The specific AI model identifier — must match your provider exactly</td>
+                <td style="padding:14px 20px;border-bottom:1px solid #e8e0f0;"><code style="background-color:#f3edf7;color:#714B67;padding:2px 8px;border-radius:6px;font-size:0.82em;font-weight:600;">openai/gpt-4o</code></td>
+            </tr>
+            <tr style="background-color:#fff;">
+                <td style="padding:14px 20px;font-weight:700;color:#1e1e2e;">Max Response Tokens</td>
+                <td style="padding:14px 20px;color:#6b7280;">Limits the length of AI responses — higher means more detail</td>
+                <td style="padding:14px 20px;"><code style="background-color:#f3edf7;color:#714B67;padding:2px 8px;border-radius:6px;font-size:0.82em;font-weight:600;">1024</code></td>
+            </tr>
+        </table>
+
+        <div style="background-color:#f3edf7;border-radius:12px;padding:14px 18px;margin-top:20px;border-left:4px solid #714B67;">
+            <p style="font-size:0.88rem;color:#4e3248;margin:0;"><strong>Note:</strong> Only users in the <strong>System Administrator</strong> group can access Help Chatbot settings. All API keys are stored as encrypted Odoo system parameters.</p>
         </div>
     </div>
 </div>
 
-<!-- ══════════════════════ KEY FEATURES ══════════════════════ -->
-<section>
-    <div class="container">
-        <span class="badge">
-            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            Features
-        </span>
-        <h2 class="section-title">Everything your team needs</h2>
-        <div class="divider-line"></div>
-        <p class="section-sub">All features live inside Odoo — zero context switching, zero extra tools.</p>
-        <br/><br/>
+<!-- USE CASES -->
+<div style="padding:60px 28px;background-color:#fff;">
+    <div style="max-width:980px;margin:0 auto;">
+        <span style="background-color:#f3edf7;color:#714B67;padding:4px 14px;border-radius:20px;font-size:0.75rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;display:inline-block;margin-bottom:12px;">Use Cases</span>
+        <h2 style="font-size:1.75rem;font-weight:800;color:#1e1e2e;margin:0 0 8px;">Designed for every department</h2>
+        <div style="width:52px;height:4px;background-color:#714B67;border-radius:2px;margin:0 0 16px;"></div>
+        <p style="font-size:0.98rem;color:#6b7280;margin:0 0 36px;">From Sales to HR — any Odoo user gets expert guidance at their fingertips.</p>
 
-        <div class="features-grid">
-
-            <div class="feat-card">
-                <div class="feat-icon">
-                    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
-                </div>
-                <h3>Systray Chat Panel</h3>
-                <p>A floating "?" icon in the Odoo top bar opens a sleek, full-featured chat window. Always one click away from any screen.</p>
-            </div>
-
-            <div class="feat-card">
-                <div class="feat-icon">
-                    <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-                </div>
-                <h3>Screenshot Attachment</h3>
-                <p>Attach any Odoo screenshot directly in chat. The AI analyses the image and gives guidance specific to what it sees on screen.</p>
-            </div>
-
-            <div class="feat-card">
-                <div class="feat-icon">
-                    <svg viewBox="0 0 24 24"><path d="M21 10.12h-6.78l2.74-2.82c-2.73-2.7-7.15-2.8-9.88-.1-2.73 2.71-2.73 7.08 0 9.79s7.15 2.71 9.88 0C18.32 15.65 19 14.08 19 12.1h2c0 1.98-.88 4.55-2.64 6.29-3.51 3.48-9.21 3.48-12.72 0-3.5-3.47-3.53-9.11-.02-12.58s9.14-3.47 12.65 0L21 3v7.12zM12.5 8v4.25l3.5 2.08-.72 1.21L11 13V8h1.5z"/></svg>
-                </div>
-                <h3>Multi-Provider AI</h3>
-                <p>Supports OpenAI (GPT-4o), Anthropic (Claude), and OpenRouter. Switch providers anytime in General Settings — no code changes.</p>
-            </div>
-
-            <div class="feat-card">
-                <div class="feat-icon">
-                    <svg viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
-                </div>
-                <h3>Conversation History</h3>
-                <p>Each user's chat history is stored per session. Resume where you left off, start a new conversation, or clear history in one click.</p>
-            </div>
-
-            <div class="feat-card">
-                <div class="feat-icon">
-                    <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-                </div>
-                <h3>User-Scoped Security</h3>
-                <p>Each user sees only their own messages. Odoo record rules ensure full data privacy across all users on the same instance.</p>
-            </div>
-
-            <div class="feat-card">
-                <div class="feat-icon">
-                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm4.24 16L12 15.45 7.77 18l1.12-4.81-3.73-3.23 4.92-.42L12 5l1.92 4.53 4.92.42-3.73 3.23L16.23 18z"/></svg>
-                </div>
-                <h3>Quick Suggestions</h3>
-                <p>The welcome screen shows common question shortcuts — "Can't confirm sales order", "Invoice not posting" — for instant, one-tap help.</p>
-            </div>
-
-            <div class="feat-card">
-                <div class="feat-icon">
-                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-                </div>
-                <h3>Structured Responses</h3>
-                <p>Every AI answer follows a consistent format: <em>The Issue → The Fix → Why It Happens → Pro Tip</em>. Clear and actionable every time.</p>
-            </div>
-
-            <div class="feat-card">
-                <div class="feat-icon">
-                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                </div>
-                <h3>Business Language Only</h3>
-                <p>The AI is configured to never produce code or technical solutions. Users always receive human-friendly, workflow-focused answers.</p>
-            </div>
-
-            <div class="feat-card">
-                <div class="feat-icon">
-                    <svg viewBox="0 0 24 24"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>
-                </div>
-                <h3>Responsive Design</h3>
-                <p>The chat panel adapts to any screen size — fully usable on tablets and mobile browsers within the Odoo interface.</p>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-<!-- ══════════════════════ HOW IT WORKS ══════════════════════ -->
-<section class="alt">
-    <div class="container">
-        <span class="badge">How It Works</span>
-        <h2 class="section-title">From question to answer in seconds</h2>
-        <div class="divider-line"></div>
-        <p class="section-sub">No technical knowledge required. Any Odoo user can get expert guidance instantly.</p>
-        <br/><br/>
-
-        <div class="steps-wrap">
-
-            <div class="step-row">
-                <div class="step-left">
-                    <div class="step-num-circle">1</div>
-                    <div class="step-connector"></div>
-                </div>
-                <div class="step-body">
-                    <h3>Click the "?" Button in the Systray</h3>
-                    <p>The Help button lives in the Odoo top navigation bar. Click it from any screen — a smooth chat panel slides up immediately. No page reload, no new tabs.</p>
-                </div>
-            </div>
-
-            <div class="step-row">
-                <div class="step-left">
-                    <div class="step-num-circle">2</div>
-                    <div class="step-connector"></div>
-                </div>
-                <div class="step-body">
-                    <h3>Type Your Question or Attach a Screenshot</h3>
-                    <p>Ask anything: <em>"Why can't I confirm my invoice?"</em>, <em>"How do I create a vendor bill?"</em>. Optionally attach a screenshot of any Odoo error or form using the paperclip icon for visual AI analysis.</p>
-                </div>
-            </div>
-
-            <div class="step-row">
-                <div class="step-left">
-                    <div class="step-num-circle">3</div>
-                    <div class="step-connector"></div>
-                </div>
-                <div class="step-body">
-                    <h3>AI Analyses and Responds</h3>
-                    <p>The configured AI (OpenAI, Anthropic, or OpenRouter) processes the question and any attached image. It follows a strict business-focused prompt purpose-built for Odoo workflows.</p>
-                </div>
-            </div>
-
-            <div class="step-row">
-                <div class="step-left">
-                    <div class="step-num-circle">4</div>
-                    <div class="step-connector"></div>
-                </div>
-                <div class="step-body">
-                    <h3>Follow the Step-by-Step Guidance</h3>
-                    <p>The response always includes: a plain-English explanation of the issue, numbered navigation steps (e.g. <em>Sales › Orders › Quotations</em>), the business reason behind it, and a prevention tip.</p>
-                </div>
-            </div>
-
-            <div class="step-row">
-                <div class="step-left">
-                    <div class="step-num-circle">5</div>
-                </div>
-                <div class="step-body">
-                    <h3>Continue the Conversation</h3>
-                    <p>Ask follow-up questions in the same session — the AI remembers full conversation context. Start a new session with the <em>"+" button</em>, or clear history with the trash icon at any time.</p>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-<!-- ══════════════════════ AI PROVIDERS ══════════════════════ -->
-<section>
-    <div class="container">
-        <span class="badge">AI Providers</span>
-        <h2 class="section-title">Your choice of AI engine</h2>
-        <div class="divider-line"></div>
-        <p class="section-sub">Pick the provider that fits your organisation. Switch anytime from General Settings — no reinstall needed.</p>
-        <br/><br/>
-
-        <div class="providers-grid">
-
-            <div class="provider-card">
-                <div class="provider-header">
-                    <div class="provider-logo">
-                        <div class="provider-logo-icon">
-                            <svg viewBox="0 0 24 24"><path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z"/></svg>
-                        </div>
-                        <div class="provider-name">OpenAI — GPT</div>
+        <table width="100%" cellpadding="0" cellspacing="0">
+            <tr valign="top">
+                <td width="33%" style="padding-right:10px;padding-bottom:16px;">
+                    <div style="background-color:#fff;border:1px solid #e8e0f0;border-radius:14px;padding:22px 20px;">
+                        <div style="font-size:1.6rem;margin-bottom:10px;">&#128722;</div>
+                        <strong style="font-size:0.8rem;font-weight:700;color:#714B67;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:6px;">Sales</strong>
+                        <span style="font-size:0.88rem;color:#6b7280;">"Why can't I confirm this quotation?" — instant guidance on required fields, pricelist setup, and approval flows.</span>
                     </div>
-                    <span class="provider-tag-pill">Vision Supported</span>
-                </div>
-                <div class="provider-body">
-                    <ul>
-                        <li>gpt-4o <em>★ Recommended</em></li>
-                        <li>gpt-4</li>
-                        <li>gpt-3.5-turbo</li>
-                    </ul>
-                    <p class="provider-note">Supports image/vision analysis. Requires an OpenAI API key from platform.openai.com.</p>
-                </div>
-            </div>
-
-            <div class="provider-card">
-                <div class="provider-header">
-                    <div class="provider-logo">
-                        <div class="provider-logo-icon">
-                            <svg viewBox="0 0 24 24"><path d="M17.3 1.4C15.4.5 13.3 0 11.1 0 5 0 0 5 0 11.1c0 3.1 1.3 6 3.5 8.1L1.4 22.6c-.2.4 0 .9.4 1.1.1.1.3.1.4.1.3 0 .5-.1.7-.3l2.2-3.5C6.8 21.3 8.9 22 11.1 22c6.1 0 11.1-5 11.1-11.1 0-2.2-.7-4.4-1.9-6.2l3.5-2.2c.4-.2.5-.7.3-1.1-.2-.3-.7-.4-1.1-.2l-3.5 2.2C18.8 2.6 18.1 2 17.3 1.4zm-5 18.9c-5 0-9.1-4.1-9.1-9.1 0-2.4 1-4.7 2.6-6.4l12.9 12.9c-1.7 1.6-4 2.6-6.4 2.6zM11.1 2c2.4 0 4.7 1 6.4 2.6L4.6 17.5C3 15.8 2 13.5 2 11.1 2 6.1 6.1 2 11.1 2z"/></svg>
-                        </div>
-                        <div class="provider-name">Anthropic — Claude</div>
+                </td>
+                <td width="33%" style="padding:0 5px 16px;">
+                    <div style="background-color:#fff;border:1px solid #e8e0f0;border-radius:14px;padding:22px 20px;">
+                        <div style="font-size:1.6rem;margin-bottom:10px;">&#128176;</div>
+                        <strong style="font-size:0.8rem;font-weight:700;color:#714B67;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:6px;">Accounting</strong>
+                        <span style="font-size:0.88rem;color:#6b7280;">"Invoice won't post" — step-by-step fix for journal entries, locked fiscal periods, and reconciliation.</span>
                     </div>
-                    <span class="provider-tag-pill">Vision Supported</span>
-                </div>
-                <div class="provider-body">
-                    <ul>
-                        <li>claude-sonnet-4 <em>★ Recommended</em></li>
-                        <li>claude-3-5-sonnet</li>
-                        <li>claude-3-opus</li>
-                    </ul>
-                    <p class="provider-note">Supports image/vision analysis. Requires an Anthropic API key from console.anthropic.com.</p>
-                </div>
-            </div>
-
-            <div class="provider-card">
-                <div class="provider-header">
-                    <div class="provider-logo">
-                        <div class="provider-logo-icon">
-                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-                        </div>
-                        <div class="provider-name">OpenRouter</div>
+                </td>
+                <td width="33%" style="padding-left:10px;padding-bottom:16px;">
+                    <div style="background-color:#fff;border:1px solid #e8e0f0;border-radius:14px;padding:22px 20px;">
+                        <div style="font-size:1.6rem;margin-bottom:10px;">&#128230;</div>
+                        <strong style="font-size:0.8rem;font-weight:700;color:#714B67;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:6px;">Inventory</strong>
+                        <span style="font-size:0.88rem;color:#6b7280;">"Stock move is stuck" — understand demand forecasting and product reservation in plain English.</span>
                     </div>
-                    <span class="provider-tag-pill">Default Provider</span>
-                </div>
-                <div class="provider-body">
-                    <ul>
-                        <li>openai/gpt-4o</li>
-                        <li>anthropic/claude-3.5-sonnet</li>
-                        <li>google/gemini-2.0-flash-001</li>
-                        <li>meta-llama/llama-3-70b-instruct</li>
-                    </ul>
-                    <p class="provider-note">Access hundreds of models via a single OpenRouter API key from openrouter.ai.</p>
-                </div>
-            </div>
-
-        </div>
+                </td>
+            </tr>
+            <tr valign="top">
+                <td style="padding-right:10px;">
+                    <div style="background-color:#fff;border:1px solid #e8e0f0;border-radius:14px;padding:22px 20px;">
+                        <div style="font-size:1.6rem;margin-bottom:10px;">&#128196;</div>
+                        <strong style="font-size:0.8rem;font-weight:700;color:#714B67;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:6px;">Purchase</strong>
+                        <span style="font-size:0.88rem;color:#6b7280;">"How do I match a vendor bill to a PO?" — clear 3-click navigation guide with the exact Odoo menu path.</span>
+                    </div>
+                </td>
+                <td style="padding:0 5px;">
+                    <div style="background-color:#fff;border:1px solid #e8e0f0;border-radius:14px;padding:22px 20px;">
+                        <div style="font-size:1.6rem;margin-bottom:10px;">&#128100;</div>
+                        <strong style="font-size:0.8rem;font-weight:700;color:#714B67;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:6px;">HR / Payroll</strong>
+                        <span style="font-size:0.88rem;color:#6b7280;">"Leave request not visible to manager" — access rights and approval workflow explained simply.</span>
+                    </div>
+                </td>
+                <td style="padding-left:10px;">
+                    <div style="background-color:#fff;border:1px solid #e8e0f0;border-radius:14px;padding:22px 20px;">
+                        <div style="font-size:1.6rem;margin-bottom:10px;">&#128640;</div>
+                        <strong style="font-size:0.8rem;font-weight:700;color:#714B67;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:6px;">Any Error</strong>
+                        <span style="font-size:0.88rem;color:#6b7280;">Paste or screenshot any Odoo error and get a human-readable explanation, root cause, and exact fix steps.</span>
+                    </div>
+                </td>
+            </tr>
+        </table>
     </div>
-</section>
+</div>
 
-<!-- ══════════════════════ CONFIGURATION ══════════════════════ -->
-<section class="alt">
-    <div class="container">
-        <span class="badge">Configuration</span>
-        <h2 class="section-title">Up and running in under 2 minutes</h2>
-        <div class="divider-line"></div>
-        <p class="section-sub">Go to <strong>Settings → General Settings → Help Chatbot</strong> and fill in four fields.</p>
-        <br/><br/>
-
-        <div class="config-wrap">
-            <table class="config-table">
-                <thead>
-                    <tr>
-                        <th>Setting</th>
-                        <th>Description</th>
-                        <th>Example Value</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>AI Provider</td>
-                        <td>Select between OpenAI, Anthropic, or OpenRouter</td>
-                        <td><code>openrouter</code></td>
-                    </tr>
-                    <tr>
-                        <td>API Key</td>
-                        <td>The API key from your chosen provider — stored securely as a system parameter</td>
-                        <td><code>sk-••••••••••••</code></td>
-                    </tr>
-                    <tr>
-                        <td>Model Name</td>
-                        <td>The specific AI model to call — must match your provider's model identifier exactly</td>
-                        <td><code>openai/gpt-4o</code></td>
-                    </tr>
-                    <tr>
-                        <td>Max Response Tokens</td>
-                        <td>Limits the length of AI responses — higher means more detail and slightly more API cost</td>
-                        <td><code>1024</code></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="config-info">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-            <p>Only users in the <strong>System Administrator</strong> group can access and modify Help Chatbot settings. All API keys are stored as encrypted Odoo system parameters.</p>
-        </div>
-    </div>
-</section>
-
-<!-- ══════════════════════ USE CASES ══════════════════════ -->
-<section>
-    <div class="container">
-        <span class="badge">Use Cases</span>
-        <h2 class="section-title">Designed for every department</h2>
-        <div class="divider-line"></div>
-        <p class="section-sub">From Sales to HR — any Odoo user gets expert guidance at their fingertips.</p>
-        <br/><br/>
-
-        <div class="usecases-grid">
-
-            <div class="usecase-card">
-                <div class="uc-icon" style="background:#fef3e8;">&#128722;</div>
-                <div class="uc-dept">Sales</div>
-                <p>"Why can't I confirm this quotation?" — instant guidance on required fields, pricelist setup, and approval flows.</p>
-            </div>
-
-            <div class="usecase-card">
-                <div class="uc-icon" style="background:#edf7ee;">&#128176;</div>
-                <div class="uc-dept">Accounting</div>
-                <p>"Invoice won't post" — step-by-step fix for journal entries, locked fiscal periods, and account reconciliation.</p>
-            </div>
-
-            <div class="usecase-card">
-                <div class="uc-icon" style="background:#e8f0fe;">&#128230;</div>
-                <div class="uc-dept">Inventory</div>
-                <p>"Stock move is stuck" — understand demand forecasting, availability checks, and product reservation in plain English.</p>
-            </div>
-
-            <div class="usecase-card">
-                <div class="uc-icon" style="background:#fef3e8;">&#128196;</div>
-                <div class="uc-dept">Purchase</div>
-                <p>"How do I match a vendor bill to a PO?" — clear 3-click navigation guide with the exact Odoo menu path.</p>
-            </div>
-
-            <div class="usecase-card">
-                <div class="uc-icon" style="background:#f3edf7;">&#128100;</div>
-                <div class="uc-dept">HR / Payroll</div>
-                <p>"Leave request not visible to manager" — access rights and approval workflow explained simply, no IT ticket needed.</p>
-            </div>
-
-            <div class="usecase-card">
-                <div class="uc-icon" style="background:#fff0f0;">&#128640;</div>
-                <div class="uc-dept">Any Error</div>
-                <p>Paste or screenshot any Odoo error message and get a human-readable explanation, the root cause, and exact fix steps.</p>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-<!-- ══════════════════════ TECH DETAILS ══════════════════════ -->
-<section class="alt">
-    <div class="container">
-        <span class="badge">Technical Details</span>
-        <h2 class="section-title">Built the Odoo way</h2>
-        <div class="divider-line"></div>
-        <p class="section-sub">Clean OWL 2 frontend, a single JSON-RPC controller, and user-scoped record rules.</p>
-        <br/><br/>
-
-        <div class="tech-grid">
-
-            <div class="tech-card">
-                <div class="tech-card-header">
-                    <div class="tech-card-icon">
-                        <svg viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>
-                    </div>
-                    <div class="tech-card-title">Stack</div>
-                </div>
-                <div class="tech-item"><span class="tech-key">Odoo Version</span><span class="tech-val">19.0</span></div>
-                <div class="tech-item"><span class="tech-key">Frontend</span><span class="tech-val">OWL 2 component</span></div>
-                <div class="tech-item"><span class="tech-key">Dependencies</span><span class="tech-val"><code>web</code>, <code>mail</code></span></div>
-                <div class="tech-item"><span class="tech-key">License</span><span class="tech-val">LGPL-3</span></div>
-                <div class="tech-item"><span class="tech-key">Author</span><span class="tech-val">Flowient</span></div>
-            </div>
-
-            <div class="tech-card">
-                <div class="tech-card-header">
-                    <div class="tech-card-icon">
-                        <svg viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
-                    </div>
-                    <div class="tech-card-title">Architecture</div>
-                </div>
-                <div class="tech-item"><span class="tech-key">Systray Registry</span><span class="tech-val">OWL component</span></div>
-                <div class="tech-item"><span class="tech-key">API Endpoint</span><span class="tech-val"><code>/help_chatbot/ask</code></span></div>
-                <div class="tech-item"><span class="tech-key">Protocol</span><span class="tech-val">JSON-RPC</span></div>
-                <div class="tech-item"><span class="tech-key">Data Model</span><span class="tech-val"><code>help.chatbot.message</code></span></div>
-            </div>
-
-            <div class="tech-card">
-                <div class="tech-card-header">
-                    <div class="tech-card-icon">
-                        <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 4l5 2.18V11c0 3.5-2.33 6.79-5 7.93-2.67-1.14-5-4.43-5-7.93V7.18L12 5z"/></svg>
-                    </div>
-                    <div class="tech-card-title">Security &amp; AI</div>
-                </div>
-                <div class="tech-item"><span class="tech-key">Record Isolation</span><span class="tech-val">User-scoped rules</span></div>
-                <div class="tech-item"><span class="tech-key">API Calls</span><span class="tech-val">Server-side only</span></div>
-                <div class="tech-item"><span class="tech-key">Image Handling</span><span class="tech-val">Base64 vision, not stored</span></div>
-                <div class="tech-item"><span class="tech-key">Context Window</span><span class="tech-val">Last 20 messages</span></div>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-<!-- ══════════════════════ CTA ══════════════════════ -->
-<div class="cta-section">
-    <div class="cta-inner">
-        <span class="badge">Get Started</span>
-        <h2>Empower every Odoo user with AI Help</h2>
-        <p>Install Help Chatbot and give your team instant, intelligent guidance — right where they work, with zero training required.</p>
-        <div class="cta-meta">
-            <div class="cta-meta-item">
-                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                Odoo 19.0 Compatible
-            </div>
-            <div class="cta-meta-item">
-                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                One-time $10 License
-            </div>
-            <div class="cta-meta-item">
-                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                LGPL-3 Licensed
-            </div>
-        </div>
+<!-- CTA -->
+<div style="background-color:#4e3248;padding:72px 28px;text-align:center;">
+    <div style="max-width:580px;margin:0 auto;">
+        <span style="background-color:rgba(255,255,255,0.15);color:rgba(255,255,255,0.9);padding:4px 14px;border-radius:20px;font-size:0.75rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;display:inline-block;margin-bottom:20px;">Get Started</span>
+        <h2 style="font-size:2rem;font-weight:900;color:#fff;line-height:1.2;margin:0 0 16px;">Empower every Odoo user with AI Help</h2>
+        <p style="font-size:1rem;color:rgba(255,255,255,0.78);line-height:1.7;margin:0 0 24px;">Install Help Chatbot and give your team instant, intelligent guidance — right where they work, with zero training required.</p>
+        <p style="color:rgba(255,255,255,0.75);font-size:0.88rem;margin:0;">
+            <span style="margin:0 12px;">&#9733; Odoo 19.0 Compatible</span>
+            <span style="margin:0 12px;">&#9733; One-time $10 License</span>
+            <span style="margin:0 12px;">&#9733; LGPL-3 Licensed</span>
+        </p>
     </div>
 </div>
 
